@@ -60,7 +60,7 @@ class Chat extends Component {
   // Отправляет запрос с содержимым input
   // Записывает историю диалога в локальный state
   submit = async () => {
-    if (!this.state.clientMessage) {
+    if (!this.state.clientMessage) { // Валидация
       this.setState({ inputError: true })
     } else {
       try {
@@ -83,16 +83,22 @@ class Chat extends Component {
 
         let chatWindow = this.refs.chatWindow;
         chatWindow.scrollTop = 2 ** 99; // нормального решения не придумал
+
+        // Очищает input
+        await this.setState({clientMessage: ''});
       } catch (error) {
         alert(error);
       }
     }
   }
 
-  render() {
-    const error = {
-      border: '1px solid red',
+  enterSubmit = (e) => {
+    if (e.key === 'Enter') {
+      this.submit();
     }
+  }
+
+  render() {
     return (
       <div>
         <div className={style.chat} ref='chatWindow'>
@@ -102,8 +108,9 @@ class Chat extends Component {
         </div>
         <div className={style.messageContainer}>
           {
-            (!this.state.inputError) ? <input onChange={this.changeInputContent} className={style.input_chat}></input> :
-            <input onChange={this.changeInputContent} className={style.errorInput_chat} placeholder='Введите сообщение'></input>
+            (!this.state.inputError) ?
+            <input onChange={this.changeInputContent} className={style.input_chat} onKeyDown={this.enterSubmit} value={this.state.clientMessage}/> :
+            <input onChange={this.changeInputContent} className={style.errorInput_chat} placeholder='Введите сообщение'/>
           }
           <button onClick={this.submit} className={style.buttonSubmit_chat}>Отправить</button>
         </div>
