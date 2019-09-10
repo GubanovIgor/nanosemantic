@@ -20,7 +20,7 @@ const Message = (props) => {
 
     return(
         <div className={style.messageContainer}>
-            {(props.index % 2 != 0) ?
+            {(props.index % 2 !== 0) ?
                 <div style={botMessage}>{props.text}</div> :
                 <div style={clientMessage}>{props.text}</div>
             }
