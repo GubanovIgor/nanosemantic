@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import style from '../stylesheets/message.module.css'
 
 const Message = (props) => {
     const botMessage = {
@@ -19,7 +18,7 @@ const Message = (props) => {
     }
 
     return(
-        <div className={style.messageContainer}>
+        <div>
             {(props.index % 2 !== 0) ?
                 <div style={botMessage}>{props.text}</div> :
                 <div style={clientMessage}>{props.text}</div>
