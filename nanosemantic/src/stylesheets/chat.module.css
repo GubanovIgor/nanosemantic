@@ -57,5 +57,37 @@
 
 .buttonSubmit_chat:active {
     background-color: rgb(179, 179, 179);
+}
+
+.refresh {
+    display: flex;
+
+    width: 34px;
+    height: 34px;
+
+    background-color: #D9D9D9;
+
+    border-radius: 5px;
+    border: none;
+
+    margin-left: 5px;
+}
+
+.refresh:hover {
+    background-color: rgb(53, 53, 53);
+    cursor: pointer;
+}
+
+.refresh:active {
+    background-color: rgb(179, 179, 179);
     color: black;
+}
+
+.refreshImg {
+    width: 20px;
+    margin: auto;
+}
+
+.refresh:hover .refreshImgColor {
+    fill: white;
 }
