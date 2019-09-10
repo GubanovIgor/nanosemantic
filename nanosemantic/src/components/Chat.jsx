@@ -10,6 +10,7 @@ class Chat extends Component {
       clientMessage: '',
       uuid: '772c9859-4dd3-4a0d-b87d-d76b9f43cfa4',
       cuid: '',
+      inputError: false,
     }
   }
 
@@ -52,38 +53,46 @@ class Chat extends Component {
 
   // Записывает содержимое input в локальный state
   changeInputContent = async (e) => {
+    this.setState({ inputError: false });
     await this.setState({ clientMessage: e.target.value });
   }
 
   // Отправляет запрос с содержимым input
   // Записывает историю диалога в локальный state
   submit = async () => {
-    try {
-      const chatRequest = {
-        cuid: this.state.cuid,
-        text: this.state.clientMessage,
-      }
-      const resp = await fetch(`https://biz.nanosemantics.ru/api/2.1/json/Chat.request`, {
-        method: 'POST',
-        header: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(chatRequest),
-      })
-      const data = await resp.json();
-      this.setState({
-        history: [...this.state.history, this.state.clientMessage, data.result.text.value],
-      });
+    if (!this.state.clientMessage) {
+      this.setState({ inputError: true })
+    } else {
+      try {
+        const chatRequest = {
+          cuid: this.state.cuid,
+          text: this.state.clientMessage,
+        }
+        const resp = await fetch(`https://biz.nanosemantics.ru/api/2.1/json/Chat.request`, {
+          method: 'POST',
+          header: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify(chatRequest),
+        })
+        const data = await resp.json();
+        this.setState({
+          history: [...this.state.history, this.state.clientMessage, data.result.text.value],
+        });
 
-      let chatWindow = this.refs.chatWindow;
-      chatWindow.scrollTop = 2 ** 99; // нормального решения не придумал
-    } catch (error) {
-      alert(error);
+        let chatWindow = this.refs.chatWindow;
+        chatWindow.scrollTop = 2 ** 99; // нормального решения не придумал
+      } catch (error) {
+        alert(error);
+      }
     }
   }
 
   render() {
+    const error = {
+      border: '1px solid red',
+    }
     return (
       <div>
         <div className={style.chat} ref='chatWindow'>
@@ -92,7 +101,10 @@ class Chat extends Component {
           })}
         </div>
         <div className={style.messageContainer}>
-          <input onChange={this.changeInputContent} className={style.input_chat}></input>
+          {
+            (!this.state.inputError) ? <input onChange={this.changeInputContent} className={style.input_chat}></input> :
+            <input onChange={this.changeInputContent} className={style.errorInput_chat} placeholder='Введите сообщение'></input>
+          }
           <button onClick={this.submit} className={style.buttonSubmit_chat}>Отправить</button>
         </div>
       </div>
